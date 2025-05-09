@@ -92,19 +92,51 @@ class Catalog extends PureComponent<{}, CatalogState> {
     }))
   }
 
-  addProduct = () => {
-    const { newProduct, products } = this.state
-    if (newProduct.title && newProduct.description && newProduct.price) {
-      this.setState({
-        products: [...products, {
-          ...newProduct,
-          id: Date.now().toString()
-        }],
-        isModalOpen: false,
-        newProduct: { title: '', description: '', price: '' }
-      })
+  addProduct = async () => {
+    const { newProduct } = this.state;
+
+    console.log("Отправляемые данные:", newProduct);
+  
+    if (!newProduct.title || !newProduct.description || !newProduct.price) {
+      this.setState({ error: "Заполните все обязательные поля" });
+      return;
     }
-  }
+  
+    try {
+      const response = await fetch("http://localhost:5000/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: newProduct.title,
+          description: newProduct.description,
+          price: newProduct.price,
+          image: newProduct.image
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Ошибка при добавлении товара");
+      }
+  
+      const data = await response.json();
+      
+      // Обновляем состояние, добавляя новый товар
+      this.setState(prevState => ({
+        products: [...prevState.products, data],
+        isModalOpen: false,
+        newProduct: { title: "", description: "", price: "", image: "" },
+        error: null
+      }));
+  
+    } catch (error) {
+      console.error("Ошибка:", error);
+      this.setState({ 
+  error: error instanceof Error ? error.message : String(error) 
+});
+    }
+  };
 
   render() {
     const { products, isModalOpen, newProduct, isLoading, error } = this.state
