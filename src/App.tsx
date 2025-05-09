@@ -8,10 +8,12 @@ import About from './pages/About';
 import Catalog from './pages/Catalog';
 import Contacts from './pages/Contacts';
 
+
 function App() {
   const [count, setCount] = useState<number>(0);
 
   return (
+    
     <BrowserRouter>
       <div className="flex flex-col min-h-screen">
         <Header />
@@ -26,6 +28,7 @@ function App() {
         <Footer />
       </div>
     </BrowserRouter>
+    
   );
 }
 

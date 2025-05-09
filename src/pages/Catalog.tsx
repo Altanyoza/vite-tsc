@@ -3,6 +3,7 @@ import Input from '../components/Input'
 import Button from '../components/Button'
 import Text from '../components/Text'
 import ProductCard from '../components/ProductCard'
+import { Helmet } from 'react-helmet';
 
 interface Product {
   id: string;
@@ -142,6 +143,12 @@ class Catalog extends PureComponent<{}, CatalogState> {
     const { products, isModalOpen, newProduct, isLoading, error } = this.state
 
     return (
+      <>
+       <Helmet>
+          <title>Каталог товаров | Якутские ножи</title>
+          <meta name="description" content="Каталог авторских якутских ножей ручной работы. Выберите нож по характеристикам и цене." />
+          <meta name="keywords" content="каталог ножей, якутские ножи купить, ножи ручной работы, охотничьи ножи" />
+        </Helmet>
       <div className="container mx-auto px-4 py-12">
         <div className="flex justify-between items-center mb-8">
           <Text size="xl" bold>Каталог товаров</Text>
@@ -151,7 +158,6 @@ class Catalog extends PureComponent<{}, CatalogState> {
             onClick={this.openModal}
           />
         </div>
-
         {/* Состояние загрузки */}
         {isLoading && <Text>Загрузка данных...</Text>}
 
@@ -237,6 +243,7 @@ class Catalog extends PureComponent<{}, CatalogState> {
           ))}
         </div>
       </div>
+      </>
     )
   }
 }

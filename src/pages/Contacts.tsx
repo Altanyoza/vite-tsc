@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import Input from '../components/Input'
 import Button from '../components/Button'
 import Text from '../components/Text'
+import { Helmet } from 'react-helmet';
 
 interface FormData {
     name: string;
@@ -48,6 +49,11 @@ class Contacts extends PureComponent<{}, ContactsState> {
         
         return (
             <div className="min-h-screen bg-gray-50 py-12">
+                <Helmet>
+                    <title>Контакты | Якутские ножи</title>
+                    <meta name="description" content="Контактная информация магазина якутских ножей. Адрес, телефон, форма обратной связи." />
+                    <meta name="keywords" content="контакты магазина ножей, якутские ножи заказать, связаться с мастером" />
+                </Helmet>
                 <div className="container mx-auto px-4">
                     <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-md overflow-hidden p-8">
                         <Text size="xl" bold className="mb-2">Свяжитесь с нами</Text>
