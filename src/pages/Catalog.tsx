@@ -10,7 +10,6 @@ interface Product {
   description: string;
   price: string;
   image?: string;
-  
 }
 
 interface CatalogState {
@@ -22,35 +21,61 @@ interface CatalogState {
     price: string;
     image?: string;
   };
+  isLoading: boolean;
+  error: string | null;
 }
 
 class Catalog extends PureComponent<{}, CatalogState> {
   constructor(props: {}) {
     super(props)
     this.state = {
-      products: [
-        {
-          id: '1',
-          title: 'Авторский нож',
-          description: '11 см, черный граб',
-          price: '10000',
-          image: '/images/one.jpg'
-        },
-        {
-          id: '2',
-          title: 'Авторский нож',
-          description: '15 см, карельчкая береза',
-          price: '10000',
-          image: '/images/two.jpg'
-        }
-      ],
+      products: [],
       isModalOpen: false,
       newProduct: {
         title: '',
         description: '',
         price: '',
         image: ''
+      },
+      isLoading: true,
+      error: null
+    }
+  }
+
+  componentDidMount() {
+    this.fetchProducts()
+  }
+
+  fetchProducts = async () => {
+    try {
+      this.setState({ isLoading: true, error: null })
+      const response = await fetch('http://localhost:5000/api/data')
+      
+      if (!response.ok) {
+        throw new Error(`Ошибка HTTP: ${response.status}`)
       }
+      
+      const data = await response.json()
+      
+      // Преобразуем данные сервера в формат продукта
+      const serverProduct: Product = {
+        id: '1', 
+        title: data.title,
+        description: data.descriptipon, 
+        price: data.cost,
+        image: '/images/one.jpg' // Добавляем изображение по умолчанию
+      }
+      
+      this.setState({
+        products: [serverProduct, ...this.state.products], // Добавляем к существующим продуктам
+        isLoading: false
+      })
+    } catch (error) {
+      this.setState({
+        error: 'Не удалось загрузить данные с сервера',
+        isLoading: false
+      })
+      console.error('Ошибка при загрузке данных:', error)
     }
   }
 
@@ -82,7 +107,7 @@ class Catalog extends PureComponent<{}, CatalogState> {
   }
 
   render() {
-    const { products, isModalOpen, newProduct } = this.state
+    const { products, isModalOpen, newProduct, isLoading, error } = this.state
 
     return (
       <div className="container mx-auto px-4 py-12">
@@ -94,6 +119,12 @@ class Catalog extends PureComponent<{}, CatalogState> {
             onClick={this.openModal}
           />
         </div>
+
+        {/* Состояние загрузки */}
+        {isLoading && <Text>Загрузка данных...</Text>}
+
+        {/* Ошибка */}
+        {error && <Text className="text-red-500">{error}</Text>}
 
         {/* Модальное окно добавления товара */}
         {isModalOpen && (
@@ -177,4 +208,5 @@ class Catalog extends PureComponent<{}, CatalogState> {
     )
   }
 }
+
 export default Catalog

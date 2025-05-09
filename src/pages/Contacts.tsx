@@ -123,7 +123,6 @@ class Contacts extends PureComponent<{}, ContactsState> {
                             size="large"
                             title="Отправить сообщение"
                             className="w-full"
-                            onClick={this.handleSubmit}
                             />
                         </form>
 
